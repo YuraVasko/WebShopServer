@@ -20,7 +20,7 @@ namespace WebShopBLL.Services
 
         public IEnumerable<DiscountDTO> GetAllDiscounts()
         {
-            return _webShop.Discounts.GetQuery().Select(d => new DiscountDTO
+            return _webShop.DiscountRepository.GetQuery().Select(d => new DiscountDTO
             {
                 Desription= d.DiscountDesription,
                 Id= d.DiscountId,
@@ -36,14 +36,14 @@ namespace WebShopBLL.Services
                 DiscountPercentage = discountDTO.Percentage,
                 Items = new List<Item>()
             };
-            _webShop.Discounts.Create(discount);
+            _webShop.DiscountRepository.Create(discount);
         }
 
         public void DeleteDiscount(int id)
         {
-            if (_webShop.Discounts.Get(id) != null)
+            if (_webShop.DiscountRepository.Get(id) != null)
             {
-                _webShop.Discounts.Delete(id);
+                _webShop.DiscountRepository.Delete(id);
                 _webShop.Save();
             }
             else

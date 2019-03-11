@@ -18,7 +18,7 @@ namespace WebShopBLL.Services
 
         public IEnumerable<ItemCategoryDTO> GetAllCategories()
         {
-            return _webShop.ItemCategories.GetQuery().Select(c => new ItemCategoryDTO
+            return _webShop.ItemCategoryRepository.GetQuery().Select(c => new ItemCategoryDTO
             {
                 CategoryName = c.ItemCategoryName 
             });
@@ -31,7 +31,7 @@ namespace WebShopBLL.Services
                 ItemCategoryName = categoryDTO.CategoryName,
                 ItemCategoryDescription = categoryDTO.CategoryDescription
             };
-            _webShop.ItemCategories.Create(category);
+            _webShop.ItemCategoryRepository.Create(category);
         }
 
         public void UpdateCategory(ItemCategoryDTO categoryDTO)
@@ -42,14 +42,14 @@ namespace WebShopBLL.Services
                 ItemCategoryName = categoryDTO.CategoryName,
                 ItemCategoryDescription = categoryDTO.CategoryDescription
             };
-            _webShop.ItemCategories.Update(category);
+            _webShop.ItemCategoryRepository.Update(category);
         }
 
         public void DeleteCategory(int id)
         {
-            if (_webShop.ItemCategories.Get(id) != null)
+            if (_webShop.ItemCategoryRepository.Get(id) != null)
             {
-                _webShop.ItemCategories.Delete(id);
+                _webShop.ItemCategoryRepository.Delete(id);
             }
             else
             {

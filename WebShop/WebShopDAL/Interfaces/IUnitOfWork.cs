@@ -9,14 +9,14 @@ namespace WebShopDAL.Interfaces
 {
     public interface IUnitOfWork : IDisposable
     {
-        IRepository<User> Users { get; }
-        IRepository<UserRole> UserRoles { get; }
-        IRepository<UserStatus> UserStatuses { get; }
-        IRepository<Purchase> Purchases { get; }
-        IRepository<ItemCategory> ItemCategories { get; }
-        IRepository<Item> Items { get; }
-        IRepository<Discount> Discounts { get; }
-        IRepository<Basket> Baskets { get; }
+        IRepository<User> UserRepository { get; }
+        IRepository<UserRole> UserRoleRepository { get; }
+        IRepository<UserStatus> UserStatusRepository { get; }
+        IRepository<Purchase> PurchaseRepository { get; }
+        IRepository<ItemCategory> ItemCategoryRepository { get; }
+        IRepository<Item> ItemRepository { get; }
+        IRepository<Discount> DiscountRepository { get; }
+        IRepository<Basket> BasketRepository { get; }
         void Save();
     }
 }

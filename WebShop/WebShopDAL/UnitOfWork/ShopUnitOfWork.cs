@@ -6,7 +6,7 @@ using WebShopDAL.Repositories;
 
 namespace WebShopDAL.UnitOfWork
 {
-    public class ShopUnitOfWork : IUnitOfWork
+    public class ShopUnitOfWork
     {
         private Context db = new Context();
         private IRepository<User> _userRepository;
@@ -18,7 +18,7 @@ namespace WebShopDAL.UnitOfWork
         private IRepository<UserStatus> _userStatusesRepository;
         private IRepository<UserRole> _userRolesRepository;
 
-        public IRepository<User> Users
+        public IRepository<User> UserRepository
         {
             get
             {
@@ -28,7 +28,7 @@ namespace WebShopDAL.UnitOfWork
             }
         }
 
-        public IRepository<Basket> Baskets
+        public IRepository<Basket> BasketRepository
         {
             get
             {
@@ -38,7 +38,7 @@ namespace WebShopDAL.UnitOfWork
             }
         }
 
-        public IRepository<Discount> Discounts
+        public IRepository<Discount> DiscountRepository
         {
             get
             {
@@ -48,7 +48,7 @@ namespace WebShopDAL.UnitOfWork
             }
         }
 
-        public IRepository<ItemCategory> ItemCategories
+        public IRepository<ItemCategory> ItemCategoryRepository
         {
             get
             {
@@ -58,7 +58,7 @@ namespace WebShopDAL.UnitOfWork
             }
         }
 
-        public IRepository<Item> Items
+        public IRepository<Item> ItemRepository
         {
             get
             {
@@ -68,7 +68,7 @@ namespace WebShopDAL.UnitOfWork
             }
         }
 
-        public IRepository<Purchase> Purchases
+        public IRepository<Purchase> PurchaseRepository
         {
             get
             {
@@ -78,7 +78,7 @@ namespace WebShopDAL.UnitOfWork
             }
         }
 
-        public IRepository<UserRole> UserRoles
+        public IRepository<UserRole> UserRoleRepository
         {
             get
             {
@@ -88,7 +88,7 @@ namespace WebShopDAL.UnitOfWork
             }
         }
 
-        public IRepository<UserStatus> UserStatuses
+        public IRepository<UserStatus> UserStatusRepository
         {
             get
             {
@@ -100,26 +100,6 @@ namespace WebShopDAL.UnitOfWork
         public void Save()
         {
             db.SaveChanges();
-        }
-
-        private bool disposed = false;
-
-        public virtual void Dispose(bool disposing)
-        {
-            if (!this.disposed)
-            {
-                if (disposing)
-                {
-                    db.Dispose();
-                }
-                this.disposed = true;
-            }
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
         }
     }
 }

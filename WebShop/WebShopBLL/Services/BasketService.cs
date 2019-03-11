@@ -17,12 +17,12 @@ namespace WebShopBLL.Services
 
         public void AddNewItemInUserBasket(int basketId, int itemId)
         {
-            var item = _webShop.Items.Get(itemId);
-            var basket = _webShop.Baskets.Get(basketId);
+            var item = _webShop.ItemRepository.Get(itemId);
+            var basket = _webShop.BasketRepository.Get(basketId);
             if (item != null && basket != null)
             {
                 basket.Items.Add(item);
-                _webShop.Baskets.Update(basket);
+                _webShop.BasketRepository.Update(basket);
                 _webShop.Save();
             }
             else
@@ -33,8 +33,8 @@ namespace WebShopBLL.Services
 
         public void RemoveItemFromUserBasket(int basketId, int itemId)
         {
-            var item = _webShop.Items.Get(itemId);
-            var basket = _webShop.Baskets.Get(basketId);
+            var item = _webShop.ItemRepository.Get(itemId);
+            var basket = _webShop.BasketRepository.Get(basketId);
             if (item != null && basket != null)
             {
                 bool isItemInBasket = basket.Items.Contains(item);
@@ -56,7 +56,7 @@ namespace WebShopBLL.Services
 
         public void ClearBasket(int basketId)
         {
-            var basket = _webShop.Baskets.Get(basketId);
+            var basket = _webShop.BasketRepository.Get(basketId);
             if (basket != null)
             {
                 basket.Items.Clear();
@@ -70,7 +70,7 @@ namespace WebShopBLL.Services
 
         public IEnumerable<ItemDTO> GetItemsFromBasket(int basketId)
         {
-            var basket = _webShop.Baskets.Get(basketId);
+            var basket = _webShop.BasketRepository.Get(basketId);
             if (basket != null)
             {
                 return basket.Items.Select(i => new ItemDTO

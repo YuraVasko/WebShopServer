@@ -20,9 +20,9 @@ namespace WebShopBLL.Services
         {
             if (!IsEmailInUse(newUser.Login))
             {
-                UserStatus status = _webShop.UserStatuses.Get(1);
-                UserRole role = _webShop.UserRoles.Get(1);
-                _webShop.Users.Create(new User
+                UserStatus status = _webShop.UserStatusRepository.Get(1);
+                UserRole role = _webShop.UserRoleRepository.Get(1);
+                _webShop.UserRepository.Create(new User
                 {
                     UserEmailLogin = newUser.Login,
                     UserPassword = newUser.Password,
@@ -41,9 +41,9 @@ namespace WebShopBLL.Services
         {
             if (!IsEmailInUse(newUser.Login))
             {
-                UserStatus status = _webShop.UserStatuses.Get(1);
-                UserRole role = _webShop.UserRoles.Get(2);
-                _webShop.Users.Create(new User
+                UserStatus status = _webShop.UserStatusRepository.Get(1);
+                UserRole role = _webShop.UserRoleRepository.Get(2);
+                _webShop.UserRepository.Create(new User
                 {
                     UserEmailLogin = newUser.Login,
                     UserPassword = newUser.Password,
@@ -62,9 +62,9 @@ namespace WebShopBLL.Services
         {
             if (!IsEmailInUse(newUser.Login))
             {
-                UserStatus status = _webShop.UserStatuses.Get(1);
-                UserRole role = _webShop.UserRoles.Get(3);
-                _webShop.Users.Create(new User
+                UserStatus status = _webShop.UserStatusRepository.Get(1);
+                UserRole role = _webShop.UserRoleRepository.Get(3);
+                _webShop.UserRepository.Create(new User
                 {
                     UserEmailLogin = newUser.Login,
                     UserPassword = newUser.Password,
@@ -81,11 +81,11 @@ namespace WebShopBLL.Services
 
         public void DeleteUserById(int id)
         {
-            var user = _webShop.Users.Get(id);
+            var user = _webShop.UserRepository.Get(id);
             if ( user != null)
             {
-                _webShop.Baskets.Delete(user.BasketId.GetValueOrDefault());
-                _webShop.Users.Delete(id);
+                _webShop.BasketRepository.Delete(user.BasketId.GetValueOrDefault());
+                _webShop.UserRepository.Delete(id);
                 _webShop.Save();
             }
             else
@@ -96,12 +96,12 @@ namespace WebShopBLL.Services
 
         public void BlockUserById(int id)
         {
-            User user = _webShop.Users.Get(id);
-            UserStatus status = _webShop.UserStatuses.Get(2);
+            User user = _webShop.UserRepository.Get(id);
+            UserStatus status = _webShop.UserStatusRepository.Get(2);
             user.UserStatus = status;
             if (user != null)
             {
-                _webShop.Users.Update(user);
+                _webShop.UserRepository.Update(user);
                 _webShop.Save();
             }
             else
@@ -112,7 +112,7 @@ namespace WebShopBLL.Services
 
         public UserDTO GetUserData(int userId)
         {
-            var user = _webShop.Users.Get(userId);
+            var user = _webShop.UserRepository.Get(userId);
             if (user != null)
             {
                 return new UserDTO
@@ -131,13 +131,13 @@ namespace WebShopBLL.Services
 
         private bool IsEmailInUse(string email)
         {
-            return _webShop.Users.Get(u => u.UserEmailLogin.ToLower() == email.ToLower()).Any();
+            return _webShop.UserRepository.Get(u => u.UserEmailLogin.ToLower() == email.ToLower()).Any();
         }
 
         public IEnumerable<UserDTO> GetAllUsers()
         {
             List<UserDTO> result = new List<UserDTO>();
-            _webShop.Users.GetQuery().Select(u => new UserDTO
+            _webShop.UserRepository.GetQuery().Select(u => new UserDTO
             {
                 UserId = u.UserId,
                 FirstName = u.FirstName,
