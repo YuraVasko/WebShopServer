@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using WebShopBLL.DtoMappers;
 using WebShopDAL.Interfaces;
 using WebShopDto;
 
@@ -10,12 +9,10 @@ namespace WebShopBLL.Services
     public class BasketService
     {
         private IUnitOfWork _webShop;
-        private ItemMapper _itemMapper;
 
         public BasketService(IUnitOfWork webShop)
         {
             _webShop = webShop;
-            _itemMapper = new ItemMapper();
         }
 
         public void AddNewItemInUserBasket(int basketId, int itemId)

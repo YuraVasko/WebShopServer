@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using WebShopBLL.DtoMappers;
 using WebShopDAL.Interfaces;
+using WebShopDAL.Models;
 using WebShopDto;
 
 namespace WebShopBLL.Services
@@ -10,36 +10,39 @@ namespace WebShopBLL.Services
     class ItemCategoryService
     {
         private IUnitOfWork _webShop;
-        private ItemCategoryMapper _itemCategory;
 
         public ItemCategoryService(IUnitOfWork webShop)
         {
             _webShop = webShop;
-            _itemCategory = new ItemCategoryMapper();
         }
 
         public IEnumerable<ItemCategoryDTO> GetAllCategories()
         {
-            var result = new List<ItemCategoryDTO>();
-            _webShop.ItemCategories.GetAll().ToList().ForEach(c => 
+            return _webShop.ItemCategories.GetQuery().Select(c => new ItemCategoryDTO
             {
-                result.Add(_itemCategory.GetItemCategoryDTOFromCategoryModel(c));
+                CategoryName = c.ItemCategoryName 
             });
-            return result;
         }
 
         public void AddCategory(ItemCategoryDTO categoryDTO)
         {
-            var category = _itemCategory.GetItemCategoryModelFromCategoryDTO(categoryDTO);
+            var category = new ItemCategory
+            {
+                ItemCategoryName = categoryDTO.CategoryName,
+                ItemCategoryDescription = categoryDTO.CategoryDescription
+            };
             _webShop.ItemCategories.Create(category);
-            _webShop.Save();
         }
 
         public void UpdateCategory(ItemCategoryDTO categoryDTO)
         {
-            var category = _itemCategory.GetItemCategoryModelFromCategoryDTO(categoryDTO);
+            var category = new ItemCategory
+            {
+                ItemCategoryId = categoryDTO.CategoryId,
+                ItemCategoryName = categoryDTO.CategoryName,
+                ItemCategoryDescription = categoryDTO.CategoryDescription
+            };
             _webShop.ItemCategories.Update(category);
-            _webShop.Save();
         }
 
         public void DeleteCategory(int id)
@@ -47,7 +50,6 @@ namespace WebShopBLL.Services
             if (_webShop.ItemCategories.Get(id) != null)
             {
                 _webShop.ItemCategories.Delete(id);
-                _webShop.Save();
             }
             else
             {

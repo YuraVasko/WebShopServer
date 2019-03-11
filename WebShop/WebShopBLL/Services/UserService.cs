@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using WebShopBLL.DtoMappers;
 using WebShopDAL.Interfaces;
 using WebShopDAL.Models;
 using WebShopDto.User;
@@ -11,12 +10,10 @@ namespace WebShopBLL.Services
     public class UserService
     {
         private IUnitOfWork _webShop;
-        private UserMapper _userMapper;
 
         public UserService(IUnitOfWork webShop)
         {
             _webShop = webShop;
-            _userMapper = new UserMapper();
         }
 
         public void AddNewClient(UserRegistrationDTO newUser)
@@ -25,8 +22,18 @@ namespace WebShopBLL.Services
             {
                 UserStatus status = _webShop.UserStatuses.Get(1);
                 UserRole role = _webShop.UserRoles.Get(1);
-                _webShop.Users.Create(_userMapper.GetUserFromUserRegistrationDTO(newUser, status, role));
-                _webShop.Save();
+                _webShop.Users.Create(new User
+                {
+                    UserEmailLogin = newUser.Login,
+                    UserPassword = newUser.Password,
+                    FirstName = newUser.FirstName,
+                    LastName = newUser.LastName,
+                    BirthdayDate = newUser.BirthdayDate,
+                    Basket = new Basket(),
+                    Purchases = new List<Purchase>(),
+                    UserStatus = status,
+                    UserRole = role
+                });
             }
         }
 
@@ -36,8 +43,18 @@ namespace WebShopBLL.Services
             {
                 UserStatus status = _webShop.UserStatuses.Get(1);
                 UserRole role = _webShop.UserRoles.Get(2);
-                _webShop.Users.Create(_userMapper.GetUserFromUserRegistrationDTO(newUser, status, role));
-                _webShop.Save();
+                _webShop.Users.Create(new User
+                {
+                    UserEmailLogin = newUser.Login,
+                    UserPassword = newUser.Password,
+                    FirstName = newUser.FirstName,
+                    LastName = newUser.LastName,
+                    BirthdayDate = newUser.BirthdayDate,
+                    Basket = new Basket(),
+                    Purchases = new List<Purchase>(),
+                    UserStatus = status,
+                    UserRole = role
+                });
             }
         }
 
@@ -47,11 +64,21 @@ namespace WebShopBLL.Services
             {
                 UserStatus status = _webShop.UserStatuses.Get(1);
                 UserRole role = _webShop.UserRoles.Get(3);
-                _webShop.Users.Create(_userMapper.GetUserFromUserRegistrationDTO(newUser, status, role));
-                _webShop.Save();
+                _webShop.Users.Create(new User
+                {
+                    UserEmailLogin = newUser.Login,
+                    UserPassword = newUser.Password,
+                    FirstName = newUser.FirstName,
+                    LastName = newUser.LastName,
+                    BirthdayDate = newUser.BirthdayDate,
+                    Basket = new Basket(),
+                    Purchases = new List<Purchase>(),
+                    UserStatus = status,
+                    UserRole = role
+                });
             }
         }
-        
+
         public void DeleteUserById(int id)
         {
             var user = _webShop.Users.Get(id);
@@ -88,7 +115,13 @@ namespace WebShopBLL.Services
             var user = _webShop.Users.Get(userId);
             if (user != null)
             {
-                return _userMapper.GetUserDTOFromUserModel(user);
+                return new UserDTO
+                {
+                    UserId = user.UserId,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    BasketId = user.BasketId.GetValueOrDefault()
+                };
             }
             else
             {
@@ -104,9 +137,12 @@ namespace WebShopBLL.Services
         public IEnumerable<UserDTO> GetAllUsers()
         {
             List<UserDTO> result = new List<UserDTO>();
-            _webShop.Users.GetAll().ToList().ForEach(u=> 
+            _webShop.Users.GetQuery().Select(u => new UserDTO
             {
-                result.Add(_userMapper.GetUserDTOFromUserModel(u));
+                UserId = u.UserId,
+                FirstName = u.FirstName,
+                LastName = u.LastName,
+                BasketId = u.BasketId.GetValueOrDefault()
             });
             return result;
         }

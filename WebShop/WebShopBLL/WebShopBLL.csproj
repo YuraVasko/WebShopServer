@@ -41,11 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DtoMappers\DiscountMapper.cs" />
-    <Compile Include="DtoMappers\ItemCategoryMapper.cs" />
     <Compile Include="Services\BasketService.cs" />
-    <Compile Include="DtoMappers\ItemMapper.cs" />
-    <Compile Include="DtoMappers\UserMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\DiscountService.cs" />
     <Compile Include="Services\ItemCategoryService.cs" />
