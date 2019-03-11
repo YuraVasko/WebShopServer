@@ -43,7 +43,7 @@
   <ItemGroup>
     <Compile Include="Interfaces\IBasketService.cs" />
     <Compile Include="Interfaces\IDiscountService.cs" />
-    <Compile Include="Interfaces\IItemCategoryServicecs.cs" />
+    <Compile Include="Interfaces\IItemCategoryService.cs" />
     <Compile Include="Interfaces\IItemService.cs" />
     <Compile Include="Interfaces\IPurchaseService.cs" />
     <Compile Include="Interfaces\IUserService.cs" />

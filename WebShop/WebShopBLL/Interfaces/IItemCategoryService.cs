@@ -3,7 +3,7 @@ using WebShopDto;
 
 namespace WebShopBLL.Interfaces
 {
-    interface IItemCategoryServicecs
+    interface IItemCategoryService
     {
         IEnumerable<ItemCategoryDTO> GetAllCategories();
         void AddCategory(ItemCategoryDTO categoryDTO);

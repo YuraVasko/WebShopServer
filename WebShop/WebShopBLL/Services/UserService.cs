@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using WebShopBLL.Interfaces;
 using WebShopDAL.Interfaces;
 using WebShopDAL.Models;
 using WebShopDto.User;
 
 namespace WebShopBLL.Services
 {
-    public class UserService
+    public class UserService : IUserService
     {
         private IUnitOfWork _webShop;
 
