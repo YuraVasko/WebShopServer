@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebShopBLL.Interfaces;
 using WebShopDAL.Interfaces;
 using WebShopDAL.Models;
 using WebShopDto;
 
 namespace WebShopBLL.Services
 {
-    class DiscountService
+    class DiscountService : IDiscountService
     {
         private IUnitOfWork _webShop;
 

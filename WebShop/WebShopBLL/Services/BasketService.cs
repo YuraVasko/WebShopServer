@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using WebShopBLL.Interfaces;
 using WebShopDAL.Interfaces;
 using WebShopDto;
 
 namespace WebShopBLL.Services
 {
-    public class BasketService
+    public class BasketService : IBasketService
     {
         private IUnitOfWork _webShop;
 

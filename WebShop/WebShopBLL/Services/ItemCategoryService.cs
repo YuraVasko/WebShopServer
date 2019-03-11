@@ -4,10 +4,11 @@ using System.Linq;
 using WebShopDAL.Interfaces;
 using WebShopDAL.Models;
 using WebShopDto;
+using WebShopBLL.Interfaces;
 
 namespace WebShopBLL.Services
 {
-    class ItemCategoryService
+    class ItemCategoryService: IItemCategoryService
     {
         private IUnitOfWork _webShop;
 
