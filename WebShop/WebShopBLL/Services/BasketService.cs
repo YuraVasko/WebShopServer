@@ -76,10 +76,26 @@ namespace WebShopBLL.Services
             var basket = _webShop.Baskets.Get(basketId);
             if (basket != null)
             {
-                var result = new List<ItemDTO>();
-                var items = basket.Items.ToList();
-                items.ForEach(i => result.Add(_itemMapper.GetItemDTOFromItemModel(i)));
-                return result;
+                return basket.Items.Select(i => new ItemDTO
+                {
+                    ItemId = i.ItemId,
+                    AvailableCount = i.AvailableCount,
+                    Descripton = i.Descripton,
+                    Price = i.Price,
+                    Title = i.Title,
+                    Discount = new DiscountDTO
+                    {
+                        Id = i.Discount.DiscountId,
+                        Desription = i.Discount.DiscountDesription,
+                        Percentage = i.Discount.DiscountPercentage
+                    },
+                    Categories = i.Categories.Select(c => new ItemCategoryDTO
+                    {
+                        CategoryDescription = c.ItemCategoryDescription,
+                        CategoryId = c.ItemCategoryId,
+                        CategoryName = c.ItemCategoryName
+                    }).ToArray(),
+                });
             }
             else
             {

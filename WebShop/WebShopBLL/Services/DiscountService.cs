@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WebShopBLL.DtoMappers;
 using WebShopDAL.Interfaces;
+using WebShopDAL.Models;
 using WebShopDto;
 
 namespace WebShopBLL.Services
@@ -22,26 +23,35 @@ namespace WebShopBLL.Services
 
         public IEnumerable<DiscountDTO> GetAllDiscounts()
         {
-            var result = new List<DiscountDTO>();
-            _webShop.Discounts.GetAll().ToList().ForEach(d =>
+            return _webShop.Discounts.GetAll().Select(d => new DiscountDTO
             {
-                result.Add(_discountMapper.GetDiscountDTOFromDiscountModel(d));
+                Desription= d.DiscountDesription,
+                Id= d.DiscountId,
+                Percentage = d.DiscountPercentage
             });
-            return result;
         }
 
         public void AddDiscount(DiscountDTO discountDTO)
         {
-            var discount = _discountMapper.GetDiscountModelDiscountDTO(discountDTO);
+            var discount = new Discount
+            {
+                DiscountDesription = discountDTO.Desription,
+                DiscountPercentage = discountDTO.Percentage,
+                Items = new List<Item>()
+            };
             _webShop.Discounts.Create(discount);
-            _webShop.Save();
         }
 
         public void UpdateCategory(DiscountDTO discountDTO)
         {
-            var discount = _discountMapper.GetDiscountModelDiscountDTO(discountDTO);
+            var discount = new Discount
+            {
+                DiscountId = discountDTO.Id,
+                DiscountDesription = discountDTO.Desription,
+                DiscountPercentage = discountDTO.Percentage,
+                Items 
+            };
             _webShop.Discounts.Update(discount);
-            _webShop.Save();
         }
 
         public void DeleteDiscount(int id)
