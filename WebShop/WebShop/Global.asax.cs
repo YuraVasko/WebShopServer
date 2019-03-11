@@ -11,6 +11,7 @@ using WebShopDAL.EntityFramework;
 using WebShopDAL.Models;
 using WebShopDto.User;
 using WebShopDAL.UnitOfWork;
+using WebShopBLL.Services;
 
 namespace WebShop
 {

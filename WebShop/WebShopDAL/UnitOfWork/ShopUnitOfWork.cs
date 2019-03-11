@@ -23,7 +23,7 @@ namespace WebShopDAL.UnitOfWork
             get
             {
                 if (_userRepository == null)
-                    _userRepository = new UserRepository(db);
+                    _userRepository = new GenericRepository<User>(db);
                 return _userRepository;
             }
         }
@@ -33,7 +33,7 @@ namespace WebShopDAL.UnitOfWork
             get
             {
                 if (_basketsRepository == null)
-                    _basketsRepository = new BasketRepository(db);
+                    _basketsRepository = new GenericRepository<Basket>(db);
                 return _basketsRepository;
             }
         }
@@ -43,7 +43,7 @@ namespace WebShopDAL.UnitOfWork
             get
             {
                 if (_discountRepository == null)
-                    _discountRepository = new DiscountRepository(db);
+                    _discountRepository = new GenericRepository<Discount>(db);
                 return _discountRepository;
             }
         }
@@ -53,7 +53,7 @@ namespace WebShopDAL.UnitOfWork
             get
             {
                 if (_itemCategoryRepository == null)
-                    _itemCategoryRepository = new ItemCategoryRepository(db);
+                    _itemCategoryRepository = new GenericRepository<ItemCategory>(db);
                 return _itemCategoryRepository;
             }
         }
@@ -63,7 +63,7 @@ namespace WebShopDAL.UnitOfWork
             get
             {
                 if (_itemRepository == null)
-                    _itemRepository = new ItemRepository(db);
+                    _itemRepository = new GenericRepository<Item>(db);
                 return _itemRepository;
             }
         }
@@ -73,7 +73,7 @@ namespace WebShopDAL.UnitOfWork
             get
             {
                 if (_purchaseRepository == null)
-                    _purchaseRepository = new PurchaseRepository(db);
+                    _purchaseRepository = new GenericRepository<Purchase>(db);
                 return _purchaseRepository;
             }
         }
@@ -83,7 +83,7 @@ namespace WebShopDAL.UnitOfWork
             get
             {
                 if (_userRolesRepository == null)
-                    _userRolesRepository = new UserRoleRepository(db);
+                    _userRolesRepository = new GenericRepository<UserRole>(db);
                 return _userRolesRepository;
             }
         }
@@ -93,7 +93,7 @@ namespace WebShopDAL.UnitOfWork
             get
             {
                 if (_userStatusesRepository == null)
-                    _userStatusesRepository = new UserStatusRepository(db);
+                    _userStatusesRepository = new GenericRepository<UserStatus>(db);
                 return _userStatusesRepository;
             }
         }

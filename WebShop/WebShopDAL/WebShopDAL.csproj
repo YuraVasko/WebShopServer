@@ -61,14 +61,7 @@
     <Compile Include="Models\UserRole.cs" />
     <Compile Include="Models\UserStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Repositories\BasketRepository.cs" />
-    <Compile Include="Repositories\DiscountRepository.cs" />
-    <Compile Include="Repositories\ItemCategoryRepository.cs" />
-    <Compile Include="Repositories\ItemRepository.cs" />
-    <Compile Include="Repositories\PurchaseRepository.cs" />
-    <Compile Include="Repositories\UserRepository.cs" />
-    <Compile Include="Repositories\UserRoleRepository.cs" />
-    <Compile Include="Repositories\UserStatusRepository.cs" />
+    <Compile Include="Repositories\GenericRepository.cs" />
     <Compile Include="UnitOfWork\ShopUnitOfWork.cs" />
   </ItemGroup>
   <ItemGroup>
