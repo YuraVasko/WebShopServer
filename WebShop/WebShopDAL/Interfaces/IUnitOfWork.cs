@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNet.Identity.EntityFramework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +11,7 @@ namespace WebShopDAL.Interfaces
     public interface IUnitOfWork : IDisposable
     {
         IRepository<User> UserRepository { get; }
-        IRepository<UserRole> UserRoleRepository { get; }
+        IRepository<IdentityRole> UserRoleRepository { get; }
         IRepository<UserStatus> UserStatusRepository { get; }
         IRepository<Purchase> PurchaseRepository { get; }
         IRepository<ItemCategory> ItemCategoryRepository { get; }

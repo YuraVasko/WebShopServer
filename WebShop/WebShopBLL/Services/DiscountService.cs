@@ -1,56 +1,62 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WebShopBLL.Interfaces;
-using WebShopDAL.Interfaces;
 using WebShopDAL.Models;
+using WebShopDAL.UnitOfWork;
 using WebShopDto;
 
 namespace WebShopBLL.Services
 {
-    class DiscountService : IDiscountService
+    public class DiscountService
     {
-        private IUnitOfWork _webShop;
+        ShopUnitOfWork _shopUnitOfWork;
 
-        public DiscountService(IUnitOfWork webShop)
+        public DiscountService(ShopUnitOfWork shopUnitOfWork)
         {
-            _webShop = webShop;
+            _shopUnitOfWork = shopUnitOfWork;
         }
 
-        public IEnumerable<DiscountDTO> GetAllDiscounts()
+        public List<DiscountDTO> GetAllDiscounts()
         {
-            return _webShop.DiscountRepository.GetQuery().Select(d => new DiscountDTO
+            return _shopUnitOfWork.DiscountRepository.GetQuery().Select(d => new DiscountDTO
             {
-                Desription= d.DiscountDesription,
-                Id= d.DiscountId,
-                Percentage = d.DiscountPercentage
+                Desription = d.DiscountDesription,
+                Percentage = d.DiscountPercentage,
+                Id = d.DiscountId
+            
+            }).ToList();
+        }
+
+        public void AddDiscountToItem(int itemId, int discountId)
+        {
+            var discount = _shopUnitOfWork.DiscountRepository.Get(discountId);
+            var item = _shopUnitOfWork.ItemRepository.Get(itemId);
+            item.Discount = discount;
+            _shopUnitOfWork.ItemRepository.Update(item);
+        }
+
+        public void AddNewDiscount(DiscountDTO newDiscount)
+        {
+            _shopUnitOfWork.DiscountRepository.Create(new Discount
+            {
+                DiscountDesription = newDiscount.Desription,
+                DiscountPercentage = newDiscount.Percentage
             });
         }
 
-        public void AddDiscount(DiscountDTO discountDTO)
+        public void DeleteDiscount(int discountId)
         {
-            var discount = new Discount
+            var discount =_shopUnitOfWork.DiscountRepository.Get(discountId);
+            if(discount != null)
             {
-                DiscountDesription = discountDTO.Desription,
-                DiscountPercentage = discountDTO.Percentage,
-                Items = new List<Item>()
-            };
-            _webShop.DiscountRepository.Create(discount);
+                _shopUnitOfWork.DiscountRepository.Delete(discount);
+            }
         }
 
-        public void DeleteDiscount(int id)
+        public void DeleteItemDiscount(int itemId)
         {
-            if (_webShop.DiscountRepository.Get(id) != null)
-            {
-                _webShop.DiscountRepository.Delete(id);
-                _webShop.Save();
-            }
-            else
-            {
-                throw new ArgumentException();
-            }
+            var item = _shopUnitOfWork.ItemRepository.Get(itemId);
+            item.Discount = null;
+            _shopUnitOfWork.ItemRepository.Update(item);
         }
     }
 }

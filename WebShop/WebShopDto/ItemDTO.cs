@@ -10,6 +10,6 @@ namespace WebShopDto
         public double Price { get; set; }
         public int AvailableCount { get; set; }
         public DiscountDTO Discount { get; set; }
-        public ICollection<ItemCategoryDTO> Categories { get; set; }
+        public IEnumerable<string> Categories { get; set; }
     }
 }

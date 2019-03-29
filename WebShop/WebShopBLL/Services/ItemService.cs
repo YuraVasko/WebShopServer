@@ -2,69 +2,99 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using WebShopBLL.Interfaces;
-using WebShopDAL.Interfaces;
 using WebShopDAL.Models;
+using WebShopDAL.UnitOfWork;
 using WebShopDto;
 
 namespace WebShopBLL.Services
 {
-    class ItemService : IItemService
+    public class ItemService
     {
-        private IUnitOfWork _webShop;
+        ShopUnitOfWork _shopUnitOfWork;
 
-        public ItemService(IUnitOfWork webShop)
+        public ItemService(ShopUnitOfWork shopUnitOfWork)
         {
-            _webShop = webShop;
-        }
-
-        public IEnumerable<ItemDTO> GetAllItems()
-        {
-            return _webShop.ItemRepository.GetQuery().Select(i => new ItemDTO
-            {
-                AvailableCount = i.AvailableCount,
-                Descripton = i.Descripton,
-                Price = i.Price,
-                Title = i.Title,
-                ItemId = i.ItemId,
-                Discount = new DiscountDTO
-                {
-                    Id = i.Discount.DiscountId,
-                    Desription = i.Discount.DiscountDesription,
-                    Percentage = i.Discount.DiscountPercentage
-                },
-                Categories = i.Categories.Select(c => new ItemCategoryDTO
-                {
-                    CategoryDescription = c.ItemCategoryDescription,
-                    CategoryId = c.ItemCategoryId,
-                    CategoryName = c.ItemCategoryName
-                }).ToArray(),
-            });
+            _shopUnitOfWork = shopUnitOfWork;
         }
 
         public void AddNewItem(ItemDTO newItem)
         {
-            _webShop.ItemRepository.Create(new Item
+            List<ItemCategory> itemCategories = _shopUnitOfWork.ItemCategoryRepository.Get(c => newItem.Categories.Contains(c.ItemCategoryName)).ToList();
+
+            var item = new Item
             {
+                Title = newItem.Title,
+                Price = newItem.Price,
                 AvailableCount = newItem.AvailableCount,
                 Descripton = newItem.Descripton,
-                Price = newItem.Price,
-                Title = newItem.Title,
-                Baskets = new List<Basket>(),
-                Purchases = new List<Purchase>(),
-                Categories = newItem.Categories.Select(c => new ItemCategory
-                {
-                    ItemCategoryDescription = c.CategoryDescription,
-                    ItemCategoryId = c.CategoryId,
-                    ItemCategoryName = c.CategoryName
-                }).ToArray(),
-            });
+                Categories = itemCategories
+            };
+
+            _shopUnitOfWork.ItemRepository.Create(item);
         }
 
-        public void DeleteItem(int id)
+        public void DeleteItemById(int itemId)
         {
-            _webShop.ItemRepository.Delete(id);
+            var item = _shopUnitOfWork.ItemRepository.Get(itemId);
+            if (item != null)
+            {
+                _shopUnitOfWork.ItemRepository.Delete(item);
+            }
+        }
+
+        public List<ItemDTO> GetAllItems()
+        {
+            return _shopUnitOfWork.ItemRepository.GetQuery().Select(i =>
+                new ItemDTO
+                {
+                    Title = i.Title,
+                    ItemId = i.ItemId,
+                    Price = i.Price,
+                    Discount = new DiscountDTO
+                    {
+                        Id = i.Discount.DiscountId,
+                        Percentage = i.Discount.DiscountId
+                    }
+                }
+            ).ToList();
+        }
+
+        public List<ItemDTO> GetAllItemsByCategory(string categoryName)
+        {
+            var category = _shopUnitOfWork.ItemCategoryRepository.GetQuery().Where(c => c.ItemCategoryName == categoryName).FirstOrDefault();
+            return _shopUnitOfWork.ItemRepository.GetQuery().Where(c => c.Categories.Contains(category)).Select(i =>
+                   new ItemDTO
+                   {
+                       Title = i.Title,
+                       ItemId = i.ItemId,
+                       Price = i.Price,
+                       Discount = new DiscountDTO
+                       {
+                           Id = i.Discount.DiscountId,
+                           Percentage = i.Discount.DiscountId
+                       }
+                   }
+            ).ToList();
+        }
+
+        public ItemDTO GetItemDetails(int id)
+        {
+            var item = _shopUnitOfWork.ItemRepository.Get(id);
+            return new ItemDTO
+            {
+                AvailableCount = item.AvailableCount,
+                Descripton = item.Descripton,
+                ItemId = item.ItemId,
+                Price = item.Price,
+                Title = item.Title,
+                Categories = item.Categories.Select(i => i.ItemCategoryName).ToList(),
+                Discount = new DiscountDTO
+                {
+                    Desription = item.Discount.DiscountDesription,
+                    Id = item.Discount.DiscountId,
+                    Percentage = item.Discount.DiscountId
+                }
+            };
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNet.Identity.EntityFramework;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -8,7 +9,7 @@ using WebShopDAL.Models;
 
 namespace WebShopDAL.EntityFramework
 {
-    public class Context: DbContext
+    public class Context: IdentityDbContext
     {
         public Context() : base("DbConection") { }
         public DbSet<Basket> Baskets { get; set; }
@@ -17,7 +18,6 @@ namespace WebShopDAL.EntityFramework
         public DbSet<ItemCategory> ItemCategories { get; set; }
         public DbSet<Purchase> Purchases { get; set; }
         public DbSet<User> Users { get; set; }
-        public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<UserStatus> UserStatuses { get; set; }
 
         static Context()

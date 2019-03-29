@@ -1,151 +1,89 @@
-﻿using System;
+﻿using Microsoft.AspNet.Identity.EntityFramework;
+using System;
 using System.Collections.Generic;
+using System.Data.Entity.Infrastructure;
+using System.Data.Entity.Validation;
 using System.Linq;
-using WebShopBLL.Interfaces;
-using WebShopDAL.Interfaces;
+using System.Text;
+using WebShopDAL.EntityFramework;
 using WebShopDAL.Models;
+using WebShopDAL.UnitOfWork;
 using WebShopDto.User;
 
 namespace WebShopBLL.Services
 {
-    public class UserService : IUserService
+    public class UserService
     {
-        private IUnitOfWork _webShop;
+        ShopUnitOfWork _shopUnitOfWork;
+        UserStore _userStore;
+        UserManager _userManager;
 
-        public UserService(IUnitOfWork webShop)
+        public UserService(ShopUnitOfWork shopUnitOfWork)
         {
-            _webShop = webShop;
+            _shopUnitOfWork = shopUnitOfWork;
+            _userStore = new UserStore();
+            _userManager = new UserManager();
         }
 
-        public void AddNewClient(UserRegistrationDTO newUser)
+        public void AddNewUser(UserDTO userRegistration, string roleName)
         {
-            if (!IsEmailInUse(newUser.Login))
+            var newUser = new User { UserName = userRegistration.Login, Email = userRegistration.Login, EmailConfirmed = true };
+
+            var role = _shopUnitOfWork.RoleRepository.Get(c => c.Name == roleName).FirstOrDefault();
+
+            newUser.Roles.Add(new IdentityUserRole() { RoleId = role.Id, UserId = newUser.Id });
+            try
             {
-                UserStatus status = _webShop.UserStatusRepository.Get(1);
-                UserRole role = _webShop.UserRoleRepository.Get(1);
-                _webShop.UserRepository.Create(new User
+                _shopUnitOfWork.UserRepository.Create(newUser);
+            }
+            catch(Exception ex)
+            {
+                if(ex is DbEntityValidationException || ex is DbUpdateException)
                 {
-                    UserEmailLogin = newUser.Login,
-                    UserPassword = newUser.Password,
-                    FirstName = newUser.FirstName,
-                    LastName = newUser.LastName,
-                    BirthdayDate = newUser.BirthdayDate,
-                    Basket = new Basket(),
-                    Purchases = new List<Purchase>(),
-                    UserStatus = status,
-                    UserRole = role
-                });
+                    throw new ArgumentException();
+                }
+                throw ex;
             }
+            _userStore.SetPasswordHashAsync(newUser, _userManager.PasswordHasher.HashPassword(userRegistration.Password));
+
+            _shopUnitOfWork.Save();
         }
 
-        public void AddNewAdmin(UserRegistrationDTO newUser)
+        public void EditUserInfo(UserDTO userRegistration)
         {
-            if (!IsEmailInUse(newUser.Login))
-            {
-                UserStatus status = _webShop.UserStatusRepository.Get(1);
-                UserRole role = _webShop.UserRoleRepository.Get(2);
-                _webShop.UserRepository.Create(new User
-                {
-                    UserEmailLogin = newUser.Login,
-                    UserPassword = newUser.Password,
-                    FirstName = newUser.FirstName,
-                    LastName = newUser.LastName,
-                    BirthdayDate = newUser.BirthdayDate,
-                    Basket = new Basket(),
-                    Purchases = new List<Purchase>(),
-                    UserStatus = status,
-                    UserRole = role
-                });
-            }
-        }
-
-        public void AddNewShopAdministrator(UserRegistrationDTO newUser)
-        {
-            if (!IsEmailInUse(newUser.Login))
-            {
-                UserStatus status = _webShop.UserStatusRepository.Get(1);
-                UserRole role = _webShop.UserRoleRepository.Get(3);
-                _webShop.UserRepository.Create(new User
-                {
-                    UserEmailLogin = newUser.Login,
-                    UserPassword = newUser.Password,
-                    FirstName = newUser.FirstName,
-                    LastName = newUser.LastName,
-                    BirthdayDate = newUser.BirthdayDate,
-                    Basket = new Basket(),
-                    Purchases = new List<Purchase>(),
-                    UserStatus = status,
-                    UserRole = role
-                });
-            }
-        }
-
-        public void DeleteUserById(int id)
-        {
-            var user = _webShop.UserRepository.Get(id);
-            if ( user != null)
-            {
-                _webShop.BasketRepository.Delete(user.BasketId.GetValueOrDefault());
-                _webShop.UserRepository.Delete(id);
-                _webShop.Save();
-            }
-            else
+            var user = _shopUnitOfWork.UserRepository.Get(u => u.UserName == userRegistration.Login).FirstOrDefault();
+            if (user == null)
             {
                 throw new ArgumentException();
             }
-        }
-
-        public void BlockUserById(int id)
-        {
-            User user = _webShop.UserRepository.Get(id);
-            UserStatus status = _webShop.UserStatusRepository.Get(2);
-            user.UserStatus = status;
-            if (user != null)
+            try
             {
-                _webShop.UserRepository.Update(user);
-                _webShop.Save();
+                _shopUnitOfWork.UserRepository.Update(user);
+                _shopUnitOfWork.Save();
             }
-            else
+            catch (Exception ex)
             {
-                throw new ArgumentException();
-            }
-        }
-
-        public UserDTO GetUserData(int userId)
-        {
-            var user = _webShop.UserRepository.Get(userId);
-            if (user != null)
-            {
-                return new UserDTO
+                if (ex is DbEntityValidationException || ex is DbUpdateException)
                 {
-                    UserId = user.UserId,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    BasketId = user.BasketId.GetValueOrDefault()
-                };
+                    throw new ArgumentException();
+                }
+                throw ex;
             }
-            else
+        }
+
+        public void DeleteUser(string userName)
+        {
+            var user = _shopUnitOfWork.UserRepository.Get(u => u.UserName == userName).FirstOrDefault();
+            if (user == null)
             {
                 throw new ArgumentException();
             }
+            _shopUnitOfWork.UserRepository.Delete(user);
         }
 
-        private bool IsEmailInUse(string email)
+        public bool HasUserPermission(string currentUserName, string userToModifyName)
         {
-            return _webShop.UserRepository.Get(u => u.UserEmailLogin.ToLower() == email.ToLower()).Any();
-        }
-
-        public IEnumerable<UserDTO> GetAllUsers()
-        {
-            List<UserDTO> result = new List<UserDTO>();
-            _webShop.UserRepository.GetQuery().Select(u => new UserDTO
-            {
-                UserId = u.UserId,
-                FirstName = u.FirstName,
-                LastName = u.LastName,
-                BasketId = u.BasketId.GetValueOrDefault()
-            });
-            return result;
+            return currentUserName == userToModifyName;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNet.Identity.EntityFramework;
+using System;
 using WebShopDAL.EntityFramework;
 using WebShopDAL.Interfaces;
 using WebShopDAL.Models;
@@ -16,7 +17,7 @@ namespace WebShopDAL.UnitOfWork
         private IRepository<Item> _itemRepository;
         private IRepository<Purchase> _purchaseRepository;
         private IRepository<UserStatus> _userStatusesRepository;
-        private IRepository<UserRole> _userRolesRepository;
+        private IRepository<IdentityRole> _rolesRepository;
 
         public IRepository<User> UserRepository
         {
@@ -78,13 +79,13 @@ namespace WebShopDAL.UnitOfWork
             }
         }
 
-        public IRepository<UserRole> UserRoleRepository
+        public IRepository<IdentityRole> RoleRepository
         {
             get
             {
-                if (_userRolesRepository == null)
-                    _userRolesRepository = new GenericRepository<UserRole>(db);
-                return _userRolesRepository;
+                if (_rolesRepository == null)
+                    _rolesRepository = new GenericRepository<IdentityRole>(db);
+                return _rolesRepository;
             }
         }
 
