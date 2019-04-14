@@ -26,7 +26,7 @@ namespace WebShopBLL.Services
                 Title = newItem.Title,
                 Price = newItem.Price,
                 AvailableCount = newItem.AvailableCount,
-                Descripton = newItem.Descripton,
+                Descripton = newItem.Description,
                 Categories = itemCategories
             };
 
@@ -42,18 +42,20 @@ namespace WebShopBLL.Services
             }
         }
 
-        public List<ItemDTO> GetAllItems()
+        public List<ItemDTO> GetItemsFromPage(int pageNumber)
         {
-            return _shopUnitOfWork.ItemRepository.GetQuery().Select(i =>
+            int n = pageNumber - 1;
+            return _shopUnitOfWork.ItemRepository.GetQuery().OrderBy(i=>i.ItemId).Skip(n*9).Take(9).Select(i =>
                 new ItemDTO
                 {
                     Title = i.Title,
                     ItemId = i.ItemId,
                     Price = i.Price,
+                    Description = i.Descripton,
                     Discount = new DiscountDTO
                     {
-                        Id = i.Discount.DiscountId,
-                        Percentage = i.Discount.DiscountId
+                        Id = i.Discount != null ? i.Discount.DiscountId : 0,
+                        Percentage = i.Discount != null ? i.Discount.DiscountPercentage : 0
                     }
                 }
             ).ToList();
@@ -83,16 +85,16 @@ namespace WebShopBLL.Services
             return new ItemDTO
             {
                 AvailableCount = item.AvailableCount,
-                Descripton = item.Descripton,
+                Description = item.Descripton,
                 ItemId = item.ItemId,
                 Price = item.Price,
                 Title = item.Title,
-                Categories = item.Categories.Select(i => i.ItemCategoryName).ToList(),
+                Categories = item.Categories != null ? item.Categories.Select(i => i.ItemCategoryName).ToList() : null,
                 Discount = new DiscountDTO
                 {
-                    Desription = item.Discount.DiscountDesription,
-                    Id = item.Discount.DiscountId,
-                    Percentage = item.Discount.DiscountId
+                    Description = item.Discount != null ? item.Discount.DiscountDesription : string.Empty,
+                    Id = item.Discount != null ? item.Discount.DiscountId : 0,
+                    Percentage = item.Discount != null ? item.Discount.DiscountId : 0
                 }
             };
         }

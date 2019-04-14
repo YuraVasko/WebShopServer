@@ -41,9 +41,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddDiscountToItemModel.cs" />
     <Compile Include="DiscountDTO.cs" />
     <Compile Include="ItemCategoryDTO.cs" />
     <Compile Include="ItemDTO.cs" />
+    <Compile Include="ItemUserIdDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="User\UserDTO.cs" />
   </ItemGroup>

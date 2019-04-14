@@ -17,7 +17,7 @@ namespace WebShopAPI.App_Start
     public partial class Startup
     {
         public void ConfigureOAuth(IAppBuilder app)
-        {
+        { 
             var issuer = ConfigurationManager.AppSettings["issuer"];
             var secret = TextEncodings.Base64Url.Decode(ConfigurationManager.AppSettings["secret"]);
 

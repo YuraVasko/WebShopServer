@@ -19,7 +19,7 @@ namespace WebShopAPI.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles = "Admin")]
         [Route("all/discounts")]
         public HttpResponseMessage GetAllDiscounts()
         {
@@ -30,9 +30,9 @@ namespace WebShopAPI.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [Route("add/discount/per/item")]
-        public HttpResponseMessage AddDiscountPerItem([FromBody] int discountId, [FromBody] int itemId)
+        public HttpResponseMessage AddDiscountPerItem(AddDiscountToItemModel model)
         {
-            _discountService.AddDiscountToItem(itemId, discountId);
+            _discountService.AddDiscountToItem(model.ItemId, model.DiscountId);
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
 

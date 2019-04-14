@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using WebShopDAL.Models;
 using WebShopDAL.UnitOfWork;
@@ -19,7 +20,7 @@ namespace WebShopBLL.Services
         {
             return _shopUnitOfWork.DiscountRepository.GetQuery().Select(d => new DiscountDTO
             {
-                Desription = d.DiscountDesription,
+                Description = d.DiscountDesription,
                 Percentage = d.DiscountPercentage,
                 Id = d.DiscountId
             
@@ -38,7 +39,7 @@ namespace WebShopBLL.Services
         {
             _shopUnitOfWork.DiscountRepository.Create(new Discount
             {
-                DiscountDesription = newDiscount.Desription,
+                DiscountDesription = newDiscount.Description,
                 DiscountPercentage = newDiscount.Percentage
             });
         }
@@ -54,8 +55,13 @@ namespace WebShopBLL.Services
 
         public void DeleteItemDiscount(int itemId)
         {
-            var item = _shopUnitOfWork.ItemRepository.Get(itemId);
+            var item = _shopUnitOfWork.ItemRepository.GetQuery().Include(i=>i.Discount).FirstOrDefault(i=>i.ItemId == itemId);
+            int discountId = item.Discount.DiscountId;
+            var discount = _shopUnitOfWork.DiscountRepository.Get(discountId);
+
+            discount.Items.Remove(item);
             item.Discount = null;
+            _shopUnitOfWork.Save();
             _shopUnitOfWork.ItemRepository.Update(item);
         }
     }

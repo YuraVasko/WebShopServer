@@ -85,7 +85,7 @@ namespace WebShopAPI.Controllers
                 userService.DeleteUser(userName);
                 return new HttpResponseMessage(HttpStatusCode.OK);
             }
-            catch (ArgumentException ex)
+            catch (ArgumentException)
             {
                 return new HttpResponseMessage(HttpStatusCode.BadRequest);
             }

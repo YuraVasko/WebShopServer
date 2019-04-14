@@ -19,10 +19,10 @@ namespace WebShopAPI.Controllers
         }
 
         [HttpGet]
-        [Route("get/items/all")]
-        public HttpResponseMessage GetAllItems()
+        [Route("get/items/page/{pageNumber:int}")]
+        public HttpResponseMessage GetAllItems(int pageNumber)
         {
-            var allItems = itemService.GetAllItems();
+            var allItems = itemService.GetItemsFromPage(pageNumber);
             return Request.CreateResponse<IEnumerable<ItemDTO>>(HttpStatusCode.OK, allItems);
         }
 
@@ -46,9 +46,9 @@ namespace WebShopAPI.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [Route("delete/item")]
-        public HttpResponseMessage DeleteItem([FromBody]int id)
+        public HttpResponseMessage DeleteItem([FromBody]int itemId)
         {
-            itemService.DeleteItemById(id);
+            itemService.DeleteItemById(itemId);
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
 
