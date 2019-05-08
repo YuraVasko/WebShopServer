@@ -7,11 +7,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Cors;
+using WebShopAPI.SecondTask;
 
 namespace WebShopAPI
 {
     public static class WebApiConfig
     {
+
         public static void Register(HttpConfiguration config)
         {
             // Web API configuration and services
